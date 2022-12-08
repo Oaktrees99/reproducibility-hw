@@ -1,5 +1,6 @@
 #Penguins assignment R script for Michaelmas 2022
 
+#Please set the working directory to the source file location using the 'session' button in RStudio
 library(palmerpenguins)
 library(ggplot2)
 library(janitor)
@@ -19,19 +20,6 @@ data.clean <- function(penguins_raw){ #Function for cleaning data
 penguins_clean <- data.clean(penguins_raw) #Create clean data
 head(penguins_clean)
 write.csv(penguins_clean, paste0("data_clean/penguins_clean.csv"))
-
-##Question 2. Create a scatter plot of culmen length vs depth across the penguins
-{bill_plot <- ggplot(data = penguins_clean,
-       aes(x = culmen_length_mm,
-           y = culmen_depth_mm)) +
-  geom_point() +
-  geom_smooth(method='lm')
-bill_plot
-#This is a poor graph. All the penguin species have been lumped together with no differential identifiers
- #between species and sex. There is no title, making it not apparent what the graph is about. The axis labels
- #are taken straight from the data so use only lower case and underscores instead of spaces, which is
- #unintuitive and unpleasant to read.
-}
 
 ##Question 4 - run a statistical test on the dataset and produce a figure to explain it
 #I'll do a linear regression comparing flipper length with culmen (bill) length in gentoos.
