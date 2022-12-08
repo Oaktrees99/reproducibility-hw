@@ -1,0 +1,77 @@
+---
+title: "Reproducibility"
+author: "anon"
+date: "2022-12-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This code uses the following packages:
+```{r, results='hide', warning=FALSE, message=FALSE}
+library(palmerpenguins)
+library(ggplot2)
+library(janitor)
+library(dplyr)
+```
+
+## Question 1:
+### What is the reproducibility crisis in science and should we care?
+
+A 2016 study found that in a survey of over 1,500 researchers, 70% have failed to reproduce the experiments of others, and over half have failed to reproduce their own experiments (Baker 2016). The lack of care in making science reproducible is a major problem, not only because scientists waste time and energy struggling to reproduce their own experiments, but this calls into question the reliability of the conclusions of many studies. Lack of transparency also makes individual authors and science as a whole less trusted by each other and the public.
+
+## Question 2:
+### Create a figure using the Palmer Penguin dataset that is correct but badly communicates the data.
+
+```{r, Data cleaning, include=FALSE} 
+data.clean <- function(penguins_raw){
+  penguins_raw %>%
+    select(-starts_with("delta")) %>%
+    select(-Comments) %>%
+    clean_names()
+} #Preparing Palmer Penguins data for use
+penguins_clean <- data.clean(penguins_raw)
+```
+
+```{r, Mass Box Plot, echo=FALSE, warning=FALSE}
+mass_boxplot <- ggplot(data = penguins_clean, aes(x = species, y = body_mass_g)) +
+  geom_boxplot(aes(color = species), show.legend = FALSE)
+mass_boxplot #Displaying the box plot created above
+```
+
+This is a set of box plots comparing the body mass distributions of the three penguin species. It is produced using code hidden in Rmd by the echo=FALSE command. It is a poor plot. For a start, the full common and binomial names of all penguin species are given on the x axis and cannot fit on the same line, making it difficult to read. Secondly, the colour scheme uses red and green, which is colourblind-unfriendly. The plots give summaries of the data but hide the raw data points, which could easily be shown on the plot as this is a relatively small dataset. Doing this would help reveal more about the distribution of the data. The axis labels are drawn directly from the dataset, so they use all lower case letters and underscores instead of spaces, which is unappealing to read. There is also no title, so it is not immediately apparent what the plot is about.
+
+## Question 3:
+### Discuss how colour choice is important for communication in science figures and what considerations should be made
+
+Colour is an important part of figures as it can make them easier to read and understand, for example by differentiating multiple lines on a graph, or using colour gradients on a map. When considering what colours to use, it is important to account for the colour-blind, so avoid combinations of colours that they cannot differentiate, like red and green. If the subjects of the study already have associated colours, like political parties, appropriate colours should be used to avoid confusion. Ideally, colours should be used that can still communicate key information if the figure is printed in greyscale.
+
+## Question 4:
+### Run a statistical test on the Palmer Penguins dataset and produce a figure to explain it.
+
+```{r, echo=FALSE}
+gentoo <- filter(penguins_clean, species == 'Gentoo penguin (Pygoscelis papua)')
+gentoo_mod <- lm(formula = culmen_length_mm ~ flipper_length_mm, data = gentoo)
+summary(gentoo_mod)
+```
+
+I ran a linear regression on the relationship between flipper length and culmen (bill) length in gentoo penguins. It turned out to be statistically significant with a small p-value of 2.2e-16 (or 0.00000000000000022). However, the R-squared indicates only about 43.7% of the variance in culmen length is explained by flipper length. The code to produce this summary is hidden by the echo=FALSE command.
+
+Below is the graph showing the relationship between flipper length and culmen length. It is produced using code hidden by the echo=FALSE command.
+
+```{r, graph, echo=FALSE, warning=FALSE}
+
+ggplot(data = gentoo,
+       aes(x = flipper_length_mm,
+           y = culmen_length_mm)) +
+  labs(y = "Culmen length (mm)", x = "Flipper length (mm)", title = "Flipper and culmen length in gentoo penguins") +
+  geom_point(colour = 'blue') +
+  geom_smooth(method='lm') 
+```
+
+## Question 5:
+### Download someone else’s example from Question 04 and review your thoughts
+
+
